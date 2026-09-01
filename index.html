@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenCircuit Lab — Arduino &amp; ESP32 Project Showcase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-led" aria-hidden="true"></span>
+      <span class="brand-text">OpenCircuit<span class="brand-accent">Lab</span></span>
+    </a>
+    <nav class="main-nav">
+      <a href="#projects">Projects</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <svg class="hero-traces" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+    <path class="trace" d="M0,80 L220,80 L260,120 L520,120" />
+    <path class="trace" d="M0,240 L140,240 L180,280 L420,280 L460,320 L800,320" />
+    <path class="trace" d="M1200,60 L980,60 L940,100 L680,100" />
+    <path class="trace" d="M1200,420 L1000,420 L960,380 L640,380" />
+    <circle class="pad" cx="220" cy="80" r="5"/>
+    <circle class="pad" cx="520" cy="120" r="5"/>
+    <circle class="pad" cx="140" cy="240" r="5"/>
+    <circle class="pad" cx="800" cy="320" r="5"/>
+    <circle class="pad" cx="980" cy="60" r="5"/>
+    <circle class="pad" cx="680" cy="100" r="5"/>
+    <circle class="pad" cx="1000" cy="420" r="5"/>
+    <circle class="pad" cx="640" cy="380" r="5"/>
+  </svg>
+
+  <div class="wrap hero-inner">
+    <div class="status-chip">
+      <span class="status-dot"></span>
+      SYSTEM ONLINE — BOARD DETECTED
+    </div>
+    <h1 class="hero-title">Build. Wire. <span class="hero-title-accent">Ship it.</span></h1>
+    <p class="hero-sub">A showcase bench for Arduino and ESP32 projects — theory, circuit blocks, and live interactive demos, all in one board.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">Browse Projects</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num" data-count="6">0</span><span class="stat-label">Projects</span></div>
+      <div class="stat"><span class="stat-num" data-count="2">0</span><span class="stat-label">Boards</span></div>
+      <div class="stat"><span class="stat-num" data-count="12">0</span><span class="stat-label">Modules used</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FILTER BAR ===== -->
+<section class="filter-section" id="projects">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">// select_module</p>
+      <h2>Project bench</h2>
+    </div>
+    <div class="filter-bar" id="filterBar">
+      <button class="chip is-active" data-filter="all">All</button>
+      <button class="chip" data-filter="arduino">Arduino</button>
+      <button class="chip" data-filter="esp32">ESP32</button>
+      <button class="chip" data-filter="sensor">Sensor</button>
+      <button class="chip" data-filter="iot">IoT</button>
+      <button class="chip" data-filter="robotics">Robotics</button>
+    </div>
+
+    <div class="project-grid" id="projectGrid">
+      <!-- cards injected by script.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about-section" id="about">
+  <div class="wrap about-inner">
+    <div class="about-copy">
+      <p class="eyebrow">// about_this_bench</p>
+      <h2>Har project ek complete build hai</h2>
+      <p>Har card ke andar teen cheezein milengi — theory ki short summary, ek block-level circuit diagram, aur ek chalta hua interactive demo jisse aap component ka behaviour turant dekh sakte hain, bina hardware laga ke bhi.</p>
+    </div>
+    <div class="about-legend">
+      <div class="legend-row"><span class="legend-dot dot-a"></span> Overview — kya banaya, kyun banaya</div>
+      <div class="legend-row"><span class="legend-dot dot-b"></span> Circuit — block-level wiring diagram</div>
+      <div class="legend-row"><span class="legend-dot dot-c"></span> Demo — live simulation, browser mein hi</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact-section" id="contact">
+  <div class="wrap contact-inner">
+    <div class="section-head">
+      <p class="eyebrow">// serial_monitor</p>
+      <h2>Contact / Team</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="terminal">
+        <div class="terminal-bar"><span></span><span></span><span></span><span class="terminal-title">serial_monitor — 9600 baud</span></div>
+        <div class="terminal-body" id="terminalBody">
+          <p><span class="prompt">&gt;</span> Baud rate set to 9600...</p>
+          <p><span class="prompt">&gt;</span> Waiting for your message...</p>
+        </div>
+        <div class="terminal-form">
+          <p style="font-size:13px; color: var(--silk-dim); margin: 0 0 4px;">Message bhejne ke liye niche form kholo — poora message wahin fill hoga.</p>
+          <a href="https://form.typeform.com/to/ZrpPo1Stm" target="_blank" rel="noopener" id="openFormBtn" class="btn btn-primary btn-block">Open Contact Form &gt;_</a>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <h3>Project Team</h3>
+        <ul class="team-list">
+          <li>
+            <span class="team-name">Rajeev Kumar</span>
+            <span class="team-role">Firmware &amp; Circuit Design</span>
+          </li>
+          <li>
+            <span class="team-name">Add teammate</span>
+            <span class="team-role">Role here</span>
+          </li>
+        </ul>
+        <div class="team-meta">
+          <p><strong>Institute:</strong> Raj Kumar Goel Institute of Technology</p>
+          <p><strong>Program:</strong> B.Tech, Electronics and Communication Engineering</p>
+          <p><strong>Affiliation:</strong> AKTU, Lucknow</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <span>© <span id="year"></span> OpenCircuit Lab — built for a college electronics showcase.</span>
+    <span class="footer-tag">PCB.trace() &rarr; compile() &rarr; upload()</span>
+  </div>
+</footer>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div class="modal-head">
+      <p class="modal-eyebrow" id="modalEyebrow">// module</p>
+      <h3 id="modalTitle">Project name</h3>
+    </div>
+    <div class="modal-tabs">
+      <button class="mtab is-active" data-tab="overview">Overview</button>
+      <button class="mtab" data-tab="circuit">Circuit</button>
+      <button class="mtab" data-tab="build">Build</button>
+      <button class="mtab" data-tab="code">Code</button>
+      <button class="mtab" data-tab="demo">Demo</button>
+    </div>
+    <div class="modal-body">
+      <div class="mpanel is-active" data-panel="overview" id="panelOverview"></div>
+      <div class="mpanel" data-panel="circuit" id="panelCircuit"></div>
+      <div class="mpanel" data-panel="build" id="panelBuild"></div>
+      <div class="mpanel" data-panel="code" id="panelCode"></div>
+      <div class="mpanel" data-panel="demo" id="panelDemo"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
