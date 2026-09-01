@@ -14,6 +14,18 @@ const PROJECTS = [
     overview: "Yeh project ek ESP32 ko WiFi se connect karta hai aur ek 4-channel relay module ke through home appliances (bulb, fan, plug) ko control karta hai. ESP32 par ek lightweight web server chalta hai jisse phone ke browser ya ek simple app se command bhej sakte hain. Manual switch bhi diya gaya hai taaki relay app ke bina bhi chal sake.",
     components: ["ESP32 Dev Board", "4-Channel Relay Module", "230V AC Bulb Socket", "Push Button (manual override)", "5V/2A Power Supply"],
     demoType: "toggle",
+    sketch: `void setup() {
+  pinMode(RELAY_PIN, OUTPUT);
+}
+
+void loop() {
+  // App se "ON" command mila
+  digitalWrite(RELAY_PIN, HIGH);
+  delay(1000);
+  // App se "OFF" command mila
+  digitalWrite(RELAY_PIN, LOW);
+  delay(1000);
+}`,
   },
   {
     id: "weather-station",
@@ -25,6 +37,17 @@ const PROJECTS = [
     overview: "DHT11 sensor Arduino ke digital pin se data leta hai — temperature aur humidity — aur ek 0.96\" OLED screen par har 2 second mein refresh karke dikhata hai. Isko easily extend karke SD card logging ya IoT dashboard tak bhi bhej sakte hain.",
     components: ["Arduino Uno", "DHT11 Temp/Humidity Sensor", "0.96\" OLED Display (I2C)", "10k Pull-up Resistor", "Breadboard + jumpers"],
     demoType: "sensor",
+    sketch: `void setup() {
+  pinMode(STATUS_LED, OUTPUT);
+}
+
+void loop() {
+  // DHT11 se naya reading aaya, LED blink karke confirm karo
+  digitalWrite(STATUS_LED, HIGH);
+  delay(300);
+  digitalWrite(STATUS_LED, LOW);
+  delay(2000); // agla reading cycle
+}`,
   },
   {
     id: "obstacle-robot",
@@ -36,6 +59,18 @@ const PROJECTS = [
     overview: "HC-SR04 ultrasonic sensor front mein laga hai jo continuously distance measure karta hai. Agar koi obstacle threshold distance ke andar aata hai, motor driver (L298N) motors ko reverse/turn command deta hai taaki robot rasta badal le. Poora logic Arduino Uno par chalta hai.",
     components: ["Arduino Uno", "HC-SR04 Ultrasonic Sensor", "L298N Motor Driver", "2x Gear Motors + Wheels", "Battery Pack (7.4V)"],
     demoType: "distance",
+    sketch: `void setup() {
+  pinMode(MOTOR_LEFT, OUTPUT);
+}
+
+void loop() {
+  // Rasta clear hai - aage badho
+  digitalWrite(MOTOR_LEFT, HIGH);
+  delay(800);
+  // Obstacle detect hua - ruk kar turn karo
+  digitalWrite(MOTOR_LEFT, LOW);
+  delay(400);
+}`,
   },
   {
     id: "plant-monitor",
@@ -47,6 +82,17 @@ const PROJECTS = [
     overview: "Ek capacitive soil moisture sensor mitti mein lagaya jaata hai, jiski reading ESP32 ADC pin se li jaati hai. ESP32 WiFi se yeh data cloud dashboard (jaise Blynk ya ThingSpeak) par bhejta hai, aur agar moisture ek threshold se neeche jaata hai to alert/notification trigger hoti hai.",
     components: ["ESP32 Dev Board", "Capacitive Soil Moisture Sensor", "Mini Water Pump (optional auto-watering)", "Relay Module", "Waterproof enclosure"],
     demoType: "sensor",
+    sketch: `void setup() {
+  pinMode(PUMP_RELAY, OUTPUT);
+}
+
+void loop() {
+  // Mitti sukhi hai - pump chalu karo
+  digitalWrite(PUMP_RELAY, HIGH);
+  delay(1500);
+  digitalWrite(PUMP_RELAY, LOW);
+  delay(3000); // agli check se pehle wait
+}`,
   },
   {
     id: "security-alarm",
@@ -58,6 +104,17 @@ const PROJECTS = [
     overview: "PIR sensor infrared body-heat motion detect karta hai. Jaise hi motion detect hota hai, Arduino ek buzzer aur red LED ko turant ON kar deta hai, aur kuch second baad auto-reset ho jaata hai. Isko easily GSM module se link karke SMS alert bhi bhej sakte hain.",
     components: ["Arduino Uno", "PIR Motion Sensor", "Active Buzzer", "Red Status LED", "9V Battery"],
     demoType: "motion",
+    sketch: `void setup() {
+  pinMode(BUZZER_PIN, OUTPUT);
+}
+
+void loop() {
+  // PIR ne motion detect kiya - alarm baja do
+  digitalWrite(BUZZER_PIN, HIGH);
+  delay(200);
+  digitalWrite(BUZZER_PIN, LOW);
+  delay(200);
+}`,
   },
   {
     id: "bt-car",
@@ -69,6 +126,17 @@ const PROJECTS = [
     overview: "HC-05 Bluetooth module Arduino se serial communication karta hai. Phone par ek simple Bluetooth-controller app se forward/back/left/right commands bhejte hain, jo Arduino L298N motor driver ko commands mein convert karke motors chalata hai.",
     components: ["Arduino Uno", "HC-05 Bluetooth Module", "L298N Motor Driver", "4x DC Gear Motors", "Chassis + Battery Pack"],
     demoType: "car",
+    sketch: `void setup() {
+  pinMode(MOTOR_FWD, OUTPUT);
+}
+
+void loop() {
+  // Bluetooth se 'F' (forward) command mila
+  digitalWrite(MOTOR_FWD, HIGH);
+  delay(600);
+  digitalWrite(MOTOR_FWD, LOW);
+  delay(300);
+}`,
   },
 ];
 
@@ -295,7 +363,7 @@ function parseCodeOps(body) {
   return ops;
 }
 
-const DEFAULT_SKETCH = `void setup() {
+const FALLBACK_SKETCH = `void setup() {
   pinMode(LED_PIN, OUTPUT);
 }
 
@@ -307,10 +375,11 @@ void loop() {
 }`;
 
 function renderCodePanel(project) {
+  const startingSketch = project.sketch || FALLBACK_SKETCH;
   panelCode.innerHTML = `
     <div class="code-layout">
-      <p class="build-hint">Arduino-style code likho — sirf <b>digitalWrite()</b> aur <b>delay()</b> statements loop() ke andar samjhe jaate hain. Run dabao aur LED ko react karte dekho. Yeh real compiler nahi hai, ek chhoti si simulation hai.</p>
-      <textarea id="codeEditor" class="code-editor" spellcheck="false">${escapeXml(DEFAULT_SKETCH)}</textarea>
+      <p class="build-hint">Yeh ${project.name} ka starter code hai — sirf <b>digitalWrite()</b> aur <b>delay()</b> statements loop() ke andar samjhe jaate hain. Run dabao aur LED ko react karte dekho. Yeh real compiler nahi hai, ek chhoti si simulation hai.</p>
+      <textarea id="codeEditor" class="code-editor" spellcheck="false">${escapeXml(startingSketch)}</textarea>
       <div class="demo-btn-row">
         <button class="demo-btn" id="codeRunBtn">Run &#9654;</button>
         <button class="demo-btn" id="codeStopBtn">Stop &#9632;</button>
@@ -385,7 +454,7 @@ function renderCodePanel(project) {
 
   runBtn.addEventListener("click", run);
   stopBtn.addEventListener("click", stop);
-  resetBtn.addEventListener("click", () => { editor.value = DEFAULT_SKETCH; });
+  resetBtn.addEventListener("click", () => { editor.value = startingSketch; });
 }
 
 function escapeXml(str) {
