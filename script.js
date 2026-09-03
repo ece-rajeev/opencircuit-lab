@@ -117,6 +117,31 @@ void loop() {
 }`,
   },
   {
+    id: "energy-meter",
+    name: "Smart Energy Meter",
+    icon: "PWR",
+    categories: ["esp32", "iot", "sensor"],
+    board: "ESP32",
+    summary: "Voltage-current sensors se real-time power measure karna, phone/laptop se load ON/OFF control karna.",
+    overview: "Yeh project ek ESP32-based smart energy meter hai jo ZMPT101B (voltage sensor) aur ACS712 (current sensor) se real-time voltage aur current padhta hai, phir unse power aur consumed units (kWh) calculate karta hai. ESP32 par ek lightweight web server/API chalta hai jisse phone ya laptop (same WiFi ya internet ke through) se connected load ko relay module ke zariye remotely ON/OFF kar sakte hain. Readings ko cloud dashboard (Firebase/ThingSpeak/apna Node.js backend) par bhi bhej sakte hain taaki consumption history track ho sake.",
+    components: ["ESP32 Dev Board", "ZMPT101B Voltage Sensor", "ACS712 Current Sensor", "5V Relay Module (Load Control)", "16x2 LCD Display (I2C, optional)"],
+    demoType: "energy",
+    sketch: `void setup() {
+  pinMode(RELAY_PIN, OUTPUT);
+}
+
+void loop() {
+  // App se "Load ON" command mila
+  digitalWrite(RELAY_PIN, HIGH);
+  delay(1000);
+  // Voltage & current sensor se reading li gayi
+  delay(1000);
+  // App se "Load OFF" command mila
+  digitalWrite(RELAY_PIN, LOW);
+  delay(1000);
+}`,
+  },
+  {
     id: "bt-car",
     name: "Bluetooth Controlled Car",
     icon: "BT",
@@ -281,6 +306,9 @@ const COMPONENT_POOL = [
   "Servo Motor",
   "Water Pump",
   "Battery Pack",
+  "ZMPT101B Voltage Sensor",
+  "ACS712 Current Sensor",
+  "16x2 LCD Display (I2C)",
 ];
 
 function buildComponentList(project) {
@@ -518,6 +546,23 @@ const DEMO_BUILDERS = {
       </div>
     `;
   },
+  energy(project) {
+    return `
+      <div class="demo-box">
+        <p style="margin:0 0 10px;">"Toggle Load" dabao — jaise phone/laptop app se ESP32 ko ON/OFF command jaati hai. Load ON hote hi voltage, current, power live update honge aur units meter badhega.</p>
+        <div class="demo-btn-row">
+          <button class="demo-btn" id="energyToggleBtn">Toggle Load</button>
+        </div>
+        <p class="demo-readout" id="energyStatus" style="font-size:18px; margin-top:12px;">LOAD: OFF</p>
+        <div class="demo-controls" style="margin-top:10px; display:grid; grid-template-columns: 1fr 1fr; gap:8px 16px;">
+          <p class="demo-readout" id="energyVoltage">Voltage: -- V</p>
+          <p class="demo-readout" id="energyCurrent">Current: -- A</p>
+          <p class="demo-readout" id="energyPower">Power: -- W</p>
+          <p class="demo-readout" id="energyUnits">Units: 0.0000 kWh</p>
+        </div>
+      </div>
+    `;
+  },
   car(project) {
     return `
       <div class="demo-box">
@@ -584,6 +629,41 @@ const DEMO_INIT = {
         status.textContent = "STATUS: IDLE";
         status.style.color = "#5EEAD4";
       }, 3000);
+    });
+  },
+  energy() {
+    const btn = document.getElementById("energyToggleBtn");
+    const status = document.getElementById("energyStatus");
+    const vEl = document.getElementById("energyVoltage");
+    const cEl = document.getElementById("energyCurrent");
+    const pEl = document.getElementById("energyPower");
+    const uEl = document.getElementById("energyUnits");
+    let on = false, units = 0, timer = null;
+
+    function tick() {
+      const v = 225 + (Math.random() * 10 - 5);
+      const c = 2 + (Math.random() * 1 - 0.5);
+      const p = v * c;
+      units += (p / 1000) * (1 / 3600); // sped-up demo accumulation, real meter integrates over actual time
+      vEl.textContent = `Voltage: ${v.toFixed(1)} V`;
+      cEl.textContent = `Current: ${c.toFixed(2)} A`;
+      pEl.textContent = `Power: ${p.toFixed(1)} W`;
+      uEl.textContent = `Units: ${units.toFixed(4)} kWh`;
+    }
+
+    btn.addEventListener("click", () => {
+      on = !on;
+      status.textContent = "LOAD: " + (on ? "ON" : "OFF");
+      status.style.color = on ? "#5EEAD4" : "#E8E4D8";
+      if (on) {
+        tick();
+        timer = setInterval(tick, 1000);
+      } else {
+        clearInterval(timer);
+        vEl.textContent = "Voltage: -- V";
+        cEl.textContent = "Current: -- A";
+        pEl.textContent = "Power: -- W";
+      }
     });
   },
   car() {
